@@ -1,13 +1,15 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
 const apiKey = "47adfc0922e13f885c6822cc19ee2514";
 
 // Middleware to parse JSON in the request body
 app.use(express.json());
+app.use(cors());
 
-app.post("/getWeather2", async (req, res) => {
+app.post("/getWeather", async (req, res) => {
   try {
     const { cities } = req.body;
 

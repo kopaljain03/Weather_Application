@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const [cities, setcities] = useState([]);
+  const [temp, settemp] = useState({});
+  function handleChange(e) {
+    const city_comma = e.target.value;
+    const city_split = city_comma.split(",");
+    setcities({ cities: city_split });
+  }
+  function handleSubmit() {
+    console.log(cities);
+    axios
+      .post("http://localhost:3000/getWeather", cities)
+      .then((res) => {
+        settemp(res.data.weather);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h2>Weather API</h2>
+      <h4>Write "," separated cities : </h4>
+
+      <input
+        type="text"
+        name="cities"
+        id="cities"
+        onChange={(e) => {
+          handleChange(e);
+        }}
+      />
+      <br />
+      <br />
+      <button
+        onClick={() => {
+          handleSubmit();
+        }}
+      >
+        Submit
+      </button>
+      <br />
+      <ul>
+        {Object.entries(temp).map(([city, temperature]) => (
+          <li key={city}>
+            {city}: {temperature}
+          </li>
+        ))}
+      </ul>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
